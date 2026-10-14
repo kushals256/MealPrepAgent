@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+/* Warm Indian-kitchen palette: haldi (turmeric), mirch (chilli), patta (curry leaf), on a chai-cream base. */
+:root {
+  --cream: #fbf6ec;
+  --paper: #fffdf8;
+  --ink: #2b2118;
+  --muted: #7a6a58;
+  --line: #eadfcb;
+  --haldi: #e9a91c;
+  --haldi-soft: #fbecc4;
+  --mirch: #c2412d;
+  --mirch-soft: #f8ddd6;
+  --patta: #2f7a4f;
+  --patta-soft: #d9eedf;
+  --masala: #8a4b20;
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-haldi: var(--haldi);
+  --color-haldi-soft: var(--haldi-soft);
+  --color-mirch: var(--mirch);
+  --color-mirch-soft: var(--mirch-soft);
+  --color-patta: var(--patta);
+  --color-patta-soft: var(--patta-soft);
+  --color-masala: var(--masala);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display-face);
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+.font-display { font-family: var(--font-display-face), Georgia, serif; }
+
+/* subtle rangoli-dot texture */
+.texture {
+  background-image: radial-gradient(rgba(138, 75, 32, 0.07) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+@keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes ripple { 0% { transform: scale(0.9); opacity: .55; } 100% { transform: scale(1.7); opacity: 0; } }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@keyframes flash { 0% { background: var(--haldi-soft); } 100% { background: transparent; } }
+@keyframes bar { 0%,100% { transform: scaleY(.35); } 50% { transform: scaleY(1); } }
+.flash { animation: flash 2.2s ease-out; }
+.scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--line); border-radius: 6px; }
