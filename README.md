@@ -46,24 +46,102 @@ See **[WRITEUP.md](WRITEUP.md)** for the full design story — how far we took t
 
 ---
 
-## Run it
+## How to run (zip or GitHub)
 
-Requirements: Node 20+ (tested on 25), **Chrome or Edge** (for the browser's speech recognition), and a free NVIDIA NIM key.
+### What you need
+
+| Requirement | Notes |
+|---|---|
+| **Node.js 20+** | Tested on Node 22/25. Check with `node -v`. Install from [nodejs.org](https://nodejs.org/) if needed. |
+| **npm** | Comes with Node (`npm -v`). |
+| **Chrome or Edge** | Voice input uses the browser Web Speech API (best with Indian English / Indic locales). Safari/Firefox are weaker for STT. |
+| **NVIDIA NIM API key (free)** | For Meera’s conversation. Get one at [build.nvidia.com](https://build.nvidia.com) → open any model → **Get API Key**. Looks like `nvapi-...`. |
+
+Mic and key are optional for a partial demo: without a key, the **plan engine, week grid, grocery list and order buttons still work**; without a mic, use the text box on every screen.
+
+### Option A — from the submission zip
+
+1. Unzip the archive (you should get a `MealPrepAgent/` folder).
+2. Open a terminal in that folder:
+
+```bash
+cd MealPrepAgent
+```
+
+3. Install dependencies, add your key, start the app:
 
 ```bash
 npm install
-cp .env.example .env.local       # then put your key in it:
-# NVIDIA_API_KEY=nvapi-...        (build.nvidia.com → any model → "Get API Key")
-npm run dev                      # http://localhost:3000
+
+cp .env.example .env.local
+# Open .env.local in an editor and set:
+# NVIDIA_API_KEY=nvapi-your-key-here
+
+npm run dev
 ```
 
-- **http://localhost:3000**: the landing page. Tap the orb and talk. Or use **"Try a messy joint family"**, or pick one of the 9 demo households from the header.
-- **http://localhost:3000/cook**: the cook's screen, ideally opened on a phone or a second tab. Use the day chips to pretend it's any day of the week.
-- Both screens share the same state and update live.
+4. Open **http://localhost:3000** in Chrome or Edge.
 
-No mic? Every screen also has a text box. Without an LLM key the engine, plan grid, grocery list and ordering still work through the buttons.
+Stop the server anytime with `Ctrl+C` in the terminal.
 
-### Evals
+### Option B — from GitHub
+
+Repo: **https://github.com/kushals256/MealPrepAgent**
+
+```bash
+git clone https://github.com/kushals256/MealPrepAgent.git
+cd MealPrepAgent
+
+npm install
+
+cp .env.example .env.local
+# Edit .env.local → NVIDIA_API_KEY=nvapi-your-key-here
+
+npm run dev
+```
+
+Then open **http://localhost:3000**.
+
+### `.env.local` (do this once)
+
+`.env.example` is the safe template (included in the zip and on GitHub). Copy it to `.env.local` — that file is gitignored and must never be committed or shared.
+
+```bash
+# .env.local
+NVIDIA_API_KEY=nvapi-...
+```
+
+Optional (advanced):
+
+```bash
+# LLM_MODELS=nvidia/nemotron-3-super-120b-a12b,nvidia/nemotron-3-ultra-550b-a55b,nvidia/nemotron-3.5-lightning-30b-a3b
+# LLM_BASE_URL=https://integrate.api.nvidia.com/v1
+```
+
+After changing `.env.local`, restart `npm run dev`.
+
+### Using the app
+
+| URL | What it is |
+|---|---|
+| **http://localhost:3000** | Household / family screen. Tap the orb (or press **Space**) and talk, or type below. Try **"Try a messy joint family"** or pick a demo household from the header. |
+| **http://localhost:3000/cook** | Cook screen — open on a phone or second tab. Day chips pretend it’s any weekday. Meera speaks in the cook’s language. |
+
+Both screens share live state. A shortage the cook reports shows up on the family’s **Kitchen feed** within about 2 seconds.
+
+**Quick path without voice:** load a demo household → use buttons / text → open Week plan and Groceries → try Instamart (simulated) or WhatsApp (real share link).
+
+### If something fails
+
+- **`NVIDIA_API_KEY is not set` / banner about missing key** — create `.env.local` from `.env.example`, paste the key, restart `npm run dev`.
+- **Mic blocked** — allow microphone for `localhost` in the browser, or use the text box.
+- **Port 3000 in use** — stop the other process, or run `npx next dev -p 3001` and open that port.
+- **Native module / SWC errors on macOS** — often quarantine on binaries after unzip; from the project folder run:  
+  `xattr -cr node_modules` then `npm run dev` again.  
+  If it still fails: `rm -rf node_modules && npm install`.
+- **First `npm install` is slow** — normal; needs network once.
+
+### Evals (optional)
 
 ```bash
 npm run eval:engine     # deterministic, no key: 9 households × 15 seeds + edit scenarios
